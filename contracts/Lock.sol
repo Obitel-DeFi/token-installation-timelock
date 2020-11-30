@@ -38,6 +38,12 @@ contract Lock is Ownable {
     // beneficiary of tokens after they are released
     address private _beneficiary;
 
+
+    // статус открыта или закрыта коробка
+    uint _status;
+
+
+    // количество пуриодов
     uint periods;
 
     //the size of periodic payments
@@ -85,6 +91,16 @@ contract Lock is Ownable {
         emit Initialized(tokenAddress,beneficiary,epochLength,p);
     }
 
+
+        /**
+     * @return the beneficiary of the tokens.
+     */
+    function status() public view returns (address) {
+        return _status;
+    }
+
+
+
     function deposit (uint amount) public { //remember to ERC20.approve
          require (_token.transferFrom(msg.sender,address(this),amount),'transfer failed');
          uint balance = _token.balanceOf(address(this));
@@ -96,6 +112,33 @@ contract Lock is Ownable {
          paymentSize = balance/paymentsRemaining;
          emit PaymentsUpdatedOnDeposit(paymentSize,startTime,paymentsRemaining);
     }
+
+    function getStat() public view returns (uint,uint,uint){
+        
+        if(epochLength == 0)
+            return (0, startTime,paymentsRemaining);
+        
+        uint elapsedEpochs = (block.timestamp - startTime)/epochLength;
+        
+        if(elapsedEpochs==0)
+            return (0, startTime,paymentsRemaining);
+        
+        elapsedEpochs = elapsedEpochs>paymentsRemaining?paymentsRemaining:elapsedEpochs;
+
+        uint newStartTime = block.timestamp;
+        uint newPaymentsRemaining = paymentsRemaining.sub(elapsedEpochs);
+        uint balance  =_token.balanceOf(address(this));
+        uint accumulatedFunds = paymentSize.mul(elapsedEpochs);
+        
+        paymentSize();
+        paymentsRemaining()
+        startTime;
+        paymentsRemaining
+        beneficiaryBalance;
+    
+         return (beneficiaryBalance.add(accumulatedFunds>balance?balance:accumulatedFunds),newStartTime,newPaymentsRemaining);
+    } 
+
 
     function getElapsedReward() public view returns (uint,uint,uint){
          if(epochLength == 0)
@@ -143,4 +186,7 @@ contract Lock is Ownable {
     event PaymentsUpdatedOnDeposit(uint paymentSize,uint startTime, uint paymentsRemaining);
     event Initialized (address tokenAddress, address beneficiary, uint duration,uint periods);
     event FundsReleasedToBeneficiary(address beneficiary, uint value, uint timeStamp);
+    event BoxOpen();
+    event BoxClosed();
+
 }
