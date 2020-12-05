@@ -11,7 +11,7 @@
     "SafeMath": "SafeMath"
   },
   "dependencies": {},
-  "name": "paypolitan-token-timelock",
+  "name": "roads-to-defi",
   "version": "0.0.2",
   "compiler": {
     "compilerSettings": {
