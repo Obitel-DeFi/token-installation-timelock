@@ -19,13 +19,24 @@
  */
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-const infuraKey = "9698ade175d94981abe3e552c59f6e8e";
+const infuraKey = "82346d04de8a43e0a729c0cf8022de2b";
 const fs = require('fs');
-const local_deployer = "0x1D8a5ca8f2Aa71e7bAFb862e4E006DC7e5aABa0E";
-const local_mnemonic = fs.readFileSync(".mnemonic").toString().trim();
 
-const deployer = "0x4532280A66a0c1c709f7e0c40B14b4dEA83253C1";
-const mnemonic = fs.readFileSync(".secret").toString().trim();
+const local_deployer = "0x4532280A66a0c1c709f7e0c40B14b4dEA83253C1";
+const local_mnemonic = fs.readFileSync(".secret").toString().trim();
+
+const truffleteam_deployer = "0x1D4d5eDfB61c6Cf2aD70D16816398Cd844Fc5495";
+const truffleteam_mnemonic = fs.readFileSync(".truffleteam").toString().trim();
+
+
+var mnemonic = fs.readFileSync(".mnemonic").toString().trim();
+const deployer = "0x1D8a5ca8f2Aa71e7bAFb862e4E006DC7e5aABa0E";
+
+
+// mnemonic = local_mnemonic;
+if(fs.existsSync(".secret")){
+  mnemonic = fs.readFileSync(".secret").toString().trim();
+}
 
 module.exports = {
   /**
@@ -46,12 +57,22 @@ module.exports = {
     // options below to some value.
     //
     development: {
-      provider: () => new HDWalletProvider(local_mnemonic, `http://127.0.0.1:8545`),
-      host: "127.0.0.1",     // Localhost (default: none)
-      port: 8545,            // Standard Ethereum port (default: none)
+      provider: () => new HDWalletProvider(local_mnemonic, `http://0.0.0.0:7545`),
+      host: "0.0.0.0",     // Localhost (default: none)
+      port: 7545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
       gas: 6700000,           // Gas sent with each transaction (default: ~6700000)
-      gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      gasPrice: 200000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
+      websockets: true        // Enable EventEmitter interface for web3 (default: false)
+    },
+    sandbox: {
+      provider: () => new HDWalletProvider(truffleteam_mnemonic, `https://sandbox.truffleteams.com/6d1ffe74-8d0e-4a6f-8725-d8c18a80f309`),
+      host: "https://sandbox.truffleteams.com/6d1ffe74-8d0e-4a6f-8725-d8c18a80f309",     // Localhost (default: none)
+      port: 7545,            // Standard Ethereum port (default: none)
+      network_id: "*",       // Any network (default: none)
+      gas: 6700000,           // Gas sent with each transaction (default: ~6700000)
+      gasPrice: 200000000000,  // 20 gwei (in wei) (default: 100 gwei)
       from: local_deployer,        // Account to send txs from (default: accounts[0])
       websockets: true        // Enable EventEmitter interface for web3 (default: false)
     },
@@ -68,8 +89,8 @@ module.exports = {
       provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/`+infuraKey),
       network_id: 4,       // Custom network
       gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
-      gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-      from: deployer,        // Account to send txs from (default: accounts[0])
+      gasPrice: 100000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
       websockets: true        // Enable EventEmitter interface for web3 (default: false)
     },
     // Useful for deploying to a public network.
@@ -80,16 +101,52 @@ module.exports = {
       gas: 5500000,        // Ropsten has a lower block limit than mainnet
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      from: deployer,        // Account to send txs from (default: accounts[0])
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+    // Goerli
+    goerli: {
+      provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/`+infuraKey),
+      network_id: 3,       // Ropsten's id
+      gas: 5500000,        // Ropsten has a lower block limit than mainnet
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+    // Kovan
+    kovan: {
+      provider: () => new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/`+infuraKey),
+      network_id: 42,       // Ropsten's id
+      gas: 5500000,        // Ropsten has a lower block limit than mainnet
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+    // xDai
+    xdai: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc.xdaichain.com/`),
+      network_id: 100,       // Ropsten's id
+      gas: 5500000,        // Ropsten has a lower block limit than mainnet
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     // Useful for private networks
-    mainnet: {
+    mainnet: { //https://web3.1inch.exchange"),// `
       provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/`+infuraKey),
       network_id: 1,   // This network is yours, in the cloud.
+      gas: 6700000,           // Gas sent with each transaction (default: ~6700000)
+      // gasPrice: 15000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      // gasPrice: 25000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      gasPrice: 4200000000,  // 20 gwei (in wei) (default: 100 gwei)
+      // gasPrice: 100000000000,  // 20 gwei (in wei) (default: 100 gwei)
       from: deployer,        // Account to send txs from (default: accounts[0])
       confirmations: 12,    // # of confs to wait between deployments. (default: 0)
-      production: true    // Treats this network as if it was a public net. (default: false)
+      production: true,    // Treats this network as if it was a public net. (default: false)
+      websockets: true        // Enable EventEmitter interface for web3 (default: false)
     },
     //Binance
     bnbtestnet: {
@@ -97,7 +154,7 @@ module.exports = {
       network_id: 97,       // Custom network
       gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
       gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-      from: deployer,        // Account to send txs from (default: accounts[0])
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
       websockets: true        // Enable EventEmitter interface for web3 (default: false)
     },
     bnbmainnet: {
@@ -105,23 +162,39 @@ module.exports = {
       network_id: 56,       // Custom network
       gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
       gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-      from: '0x4532280A66a0c1c709f7e0c40B14b4dEA83253C1',        // Account to send txs from (default: accounts[0])
+      from: local_deployer,        // Account to send txs from (default: accounts[0])
+      production: true,    // Treats this network as if it was a public net. (default: false)
       websockets: true        // Enable EventEmitter interface for web3 (default: false)
     }
   },
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    // timeout: 100000
+    timeout: 100000
   },
-
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  api_keys: {
+    etherscan: 'JG73NH7DPHI7DEWSE8IWUC1MQ4X38ZM8AE'
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
+  etherscan: {
+    apiKey: "JG73NH7DPHI7DEWSE8IWUC1MQ4X38ZM8AE"
+  },
+  sourceFetchers: ["sourcify", "etherscan"], //prefer Sourcify over Etherscan
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.7.0",
+      version: "0.7.4",
       settings: {
         optimizer: {
-          enabled: false,
+          enabled: true,
           runs: 200
         }
       }

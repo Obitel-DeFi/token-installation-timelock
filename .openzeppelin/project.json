@@ -5,15 +5,18 @@
     "Lock": "Lock",
     "Migrations": "Migrations",
     "MockToken": "MockToken",
-    "Ownable": "Ownable"
+    "Ownable": "Ownable",
+    "Context": "Context",
+    "Address": "Address",
+    "SafeMath": "SafeMath"
   },
   "dependencies": {},
-  "name": "token-installation-timelock",
+  "name": "roads-to-defi",
   "version": "0.0.2",
   "compiler": {
     "compilerSettings": {
       "optimizer": {
-        "enabled": false,
+        "enabled": true,
         "runs": "200"
       }
     },
